@@ -85,5 +85,5 @@ for i in range(1, len(sys.argv)):
 
     # debug default method
     if sys.argv[i] == '--debug':
-        result = cf.getContestList(top=5)
+        result = cf.getContestStandings(374)
         print(result)

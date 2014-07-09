@@ -12,6 +12,21 @@ class CodeForces:
     """
         CodeForces API class
 
+        methods:
+            # group of contest functions:
+            getContestHacks(self, contestId)
+            getContestList(self, gym=False, top=-1)
+            getContestStandings(self, contestId, _from=-1, count=-1, handles=[], room=-1, showUnofficial=False)
+
+            # group of problemset functions:
+            getProblemSet(self, tags=[''])
+
+            # group of user functions:
+            getUserInfo(self, handles=['tourist'])
+            getUserRatedList(self, top=-1, activeOnly=False)
+            getUserRating(self, handle='tourist', top=-1)
+            getUserStatus(self, handle='tourist', _from=1, count=1)
+
     """
 
     def __init__(self, apiKey=None, apiLang='en'):
@@ -48,7 +63,10 @@ class CodeForces:
 
         # send request to server
         request = urllib2.Request(self.apiHost + apiFunction, None, header)
-        response = urllib2.urlopen(request)
+        try:
+            response = urllib2.urlopen(request, timeout=16)
+        except Exception:
+            return None
         responseText = response.read()
         result = json.loads(responseText.decode('utf8'))
         if result['status'] == 'OK':
@@ -56,9 +74,17 @@ class CodeForces:
         else:
             return None
 
+    # group of contest functions
+    def getContestHacks(self, contestId):
+        apiFunction = 'contest.hacks?lang=%s&contestId=%d' % (self.apiLang, contestId)
+        result = self._request(apiFunction)
+        if not result:
+            return False
+        return result
+
     def getContestList(self, gym=False, top=-1):
         apiFunction = 'contest.list?lang=' + self.apiLang
-        if gym == True:
+        if gym:
             apiFunction += '&gym=true'
         result = self._request(apiFunction)
         if not result:
@@ -67,9 +93,57 @@ class CodeForces:
             result = result[0:top]
         return result
 
-    def getUserInfo(self, handles=['turist']):
-        apiFunction = 'user.info?lang=' + self.apiLang
-        apiFunction += '&handles=' + ';'.join(handles)
+    def getContestStandings(self, contestId, _from=-1, count=-1, handles=[], room=-1, showUnofficial=False):
+        """object of API response
+
+            @param: contestId
+                contestId in server, not a round number
+            @param: _from
+                start with 1, from this line return list
+            @param: count
+                number of lines in list
+            @param: handles
+                filter by this handles
+            @param: room
+                number of room, show standings only in room
+            @param: showUnofficial
+                obviously show unofficial participants too
+
+            @return: object of API response
+        """
+        apiFunction = 'contest.standings?lang=%s&contestId=%d' % (self.apiLang, contestId)
+        if _from > 0:
+            apiFunction += '&from=%d' % (_from)
+
+        if count > 0:
+            apiFunction += '&count=%d' % (count)
+
+        if handles:
+            apiFunction += '&handles=%s' % (';'.join(handles))
+
+        if room > 0:
+            apiFunction += '&room=%d' % (room)
+
+        if showUnofficial:
+            apiFunction += '&showUnofficial=true'
+
+        print(apiFunction)
+        result = self._request(apiFunction)
+        if not result:
+            return False
+        return result
+
+    # group of problemset functions
+    def getProblemSet(self, tags=['']):
+        apiFunction = 'problemset.problems?lang=%s&tags=%s' % (self.apiLang, ';'.join(tags))
+        result = self._request(apiFunction)
+        if not result:
+            return False
+        return result
+
+    # group of user functions
+    def getUserInfo(self, handles=['tourist']):
+        apiFunction = 'user.info?lang=%s&handles=%s' % (self.apiLang, ';'.join(handles))
         result = self._request(apiFunction)
         if not result:
             return False
@@ -77,4 +151,31 @@ class CodeForces:
             for color in self.userColors:
                 if value['rating'] >= color['from'] and value['rating'] <= color['to']:
                     result[key]['color'] = color['value']
+        return result
+
+    def getUserRatedList(self, top=-1, activeOnly=False):
+        apiFunction = 'user.ratedList?lang=%s' % (self.apiLang)
+        if activeOnly:
+            apiFunction += '&activeOnly=true'
+        result = self._request(apiFunction)
+        if not result:
+            return False
+        if top > 0:
+            result = result[0:top]
+        return result
+
+    def getUserRating(self, handle='tourist', top=-1):
+        apiFunction = 'user.rating?lang=%s&handle=%s' % (self.apiLang, handle)
+        result = self._request(apiFunction)
+        if not result:
+            return False
+        if top > 0:
+            result = result[-top:0]
+        return result
+
+    def getUserStatus(self, handle='tourist', _from=1, count=1):
+        apiFunction = 'user.status?lang=%s&handle=%s&from=%d&count=%d' % (self.apiLang, handle, _from, count)
+        result = self._request(apiFunction)
+        if not result:
+            return False
         return result
