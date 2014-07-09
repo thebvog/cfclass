@@ -127,7 +127,6 @@ class CodeForces:
         if showUnofficial:
             apiFunction += '&showUnofficial=true'
 
-        print(apiFunction)
         result = self._request(apiFunction)
         if not result:
             return False
