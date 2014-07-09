@@ -1,0 +1,54 @@
+alignment top_left
+background no
+border_width 0
+cpu_avg_samples 2
+default_color white
+default_outline_color white
+default_shade_color white
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+use_xft yes
+xftfont DejaVu Sans Mono:size=12
+gap_x 12
+gap_y 30
+minimum_size 100 750
+net_avg_samples 2
+no_buffers yes
+out_to_console no
+out_to_stderr no
+extra_newline no
+own_window yes
+own_window_class Conky
+own_window_type desktop
+stippled_borders 0
+update_interval 3.0
+uppercase no
+use_spacer none
+show_graph_scale no
+show_graph_range no
+double_buffer yes
+
+own_window yes
+own_window_type normal
+own_window_argb_visual yes
+own_window_argb_value 255
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+TEXT
+${color grey}Uptime:$color $uptime
+${color grey}CPU Usage:$color ${cpubar 6}
+${color grey}RAM Usage:$color ${membar 6}
+${color grey}SWP Usage:$color ${swapbar 6}
+$hr
+${color grey}File systems:
+ / $color${fs_used /}/${fs_size /} ${fs_bar 6 /}
+$hr
+${execpi 16  python ~/source/cfclass/conky.py --next-contest-list --hr --colors} $color
+${execpi 16  python ~/source/cfclass/conky.py --hr --colors --user-info thebvog} $color
+${color grey}Name               PID    CPU%   MEM%
+${color lightgrey} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
