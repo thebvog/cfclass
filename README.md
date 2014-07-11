@@ -4,6 +4,7 @@ cfclass
 Python class for CodeForces API, mostly used in conky, but may be use in other ways
 
 Run:
+
   conky.py [options]
 
 Parameters:
@@ -22,4 +23,5 @@ Parameters:
   --current-standings handle,...,handle - show list of current standings for user in list
   
   Sample .conky line (updated every 16 seconds):
+  
 ${execpi 16  python ~/source/cfclass/conky.py --next-contest-list --hr --colors}
