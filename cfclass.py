@@ -1,5 +1,5 @@
 __author__ = 'thebvog'
-__version__ = 'beta 0.1'
+__version__ = 'beta 0.2'
 
 import socket
 try:
@@ -78,9 +78,7 @@ class CodeForces:
     def getContestHacks(self, contestId):
         apiFunction = 'contest.hacks?lang=%s&contestId=%d' % (self.apiLang, contestId)
         result = self._request(apiFunction)
-        if not result:
-            return False
-        return result
+        return result or False
 
     def getContestList(self, gym=False, top=-1):
         apiFunction = 'contest.list?lang=' + self.apiLang
@@ -128,17 +126,13 @@ class CodeForces:
             apiFunction += '&showUnofficial=true'
 
         result = self._request(apiFunction)
-        if not result:
-            return False
-        return result
+        return result or False
 
     # group of problemset functions
     def getProblemSet(self, tags=['']):
         apiFunction = 'problemset.problems?lang=%s&tags=%s' % (self.apiLang, ';'.join(tags))
         result = self._request(apiFunction)
-        if not result:
-            return False
-        return result
+        return result or False
 
     # group of user functions
     def getUserInfo(self, handles=['tourist']):
@@ -175,6 +169,4 @@ class CodeForces:
     def getUserStatus(self, handle='tourist', _from=1, count=1):
         apiFunction = 'user.status?lang=%s&handle=%s&from=%d&count=%d' % (self.apiLang, handle, _from, count)
         result = self._request(apiFunction)
-        if not result:
-            return False
-        return result
+        return result or False
